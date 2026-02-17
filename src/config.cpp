@@ -75,26 +75,26 @@ const Coord gen_coordinate(string file, char symbol)
 
 
 //Piece locations
-const Coord Locations::PACMAN_START = gen_coordinate("level_1_locations.txt", '<');
+const Coord Locations::PACMAN_START = gen_coordinate("assets/level_1_locations.txt", '<');
 
-const Coord Locations::PINKY_START = gen_coordinate("level_1_locations.txt", 'P');
-const Coord Locations::PINKY_SCATTER = gen_coordinate("level_1_locations.txt", 'p');
+const Coord Locations::PINKY_START = gen_coordinate("assets/level_1_locations.txt", 'P');
+const Coord Locations::PINKY_SCATTER = gen_coordinate("assets/level_1_locations.txt", 'p');
 
-const Coord Locations::BLINKY_START = gen_coordinate("level_1_locations.txt", 'B');
-const Coord Locations::BLINKY_SCATTER = gen_coordinate("level_1_locations.txt", 'b');
+const Coord Locations::BLINKY_START = gen_coordinate("assets/level_1_locations.txt", 'B');
+const Coord Locations::BLINKY_SCATTER = gen_coordinate("assets/level_1_locations.txt", 'b');
 
-const Coord Locations::CLYDE_START = gen_coordinate("level_1_locations.txt", 'C');
-const Coord Locations::CLYDE_SCATTER = gen_coordinate("level_1_locations.txt", 'c');
+const Coord Locations::CLYDE_START = gen_coordinate("assets/level_1_locations.txt", 'C');
+const Coord Locations::CLYDE_SCATTER = gen_coordinate("assets/level_1_locations.txt", 'c');
 
-const Coord Locations::INKY_START = gen_coordinate("level_1_locations.txt", 'I');
-const Coord Locations::INKY_SCATTER = gen_coordinate("level_1_locations.txt", 'i');
+const Coord Locations::INKY_START = gen_coordinate("assets/level_1_locations.txt", 'I');
+const Coord Locations::INKY_SCATTER = gen_coordinate("assets/level_1_locations.txt", 'i');
 
-const Coord Locations::LEFT_WARP = gen_coordinate("level_1_locations.txt", 'l');
-const Coord Locations::RIGHT_WARP = gen_coordinate("level_1_locations.txt", 'r');
+const Coord Locations::LEFT_WARP = gen_coordinate("assets/level_1_locations.txt", 'l');
+const Coord Locations::RIGHT_WARP = gen_coordinate("assets/level_1_locations.txt", 'r');
 
 //Piece shapes
-const list<Coord> Shapes::BOARDER = gen_coordinates("level_1_shapes.txt", '#');
-const list<Coord> Shapes::INV_WALLS = gen_coordinates("level_1_shapes.txt", 'x');
-const list<Coord> Shapes::POINTS = gen_coordinates("./level_1_shapes.txt", '.');
-const list<Coord> Shapes::POWER_UPS = gen_coordinates("./level_1_shapes.txt", '!');
-const list<Coord> Shapes::GHOST_HOME = gen_coordinates("level_1_shapes.txt", '$');
+const list<Coord> Shapes::BOARDER = gen_coordinates("assets/level_1_shapes.txt", '#');
+const list<Coord> Shapes::INV_WALLS = gen_coordinates("assets/level_1_shapes.txt", 'x');
+const list<Coord> Shapes::POINTS = gen_coordinates("assets/level_1_shapes.txt", '.');
+const list<Coord> Shapes::POWER_UPS = gen_coordinates("assets/level_1_shapes.txt", '!');
+const list<Coord> Shapes::GHOST_HOME = gen_coordinates("assets/level_1_shapes.txt", '$');
