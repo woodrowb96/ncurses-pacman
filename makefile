@@ -2,6 +2,7 @@
 SRC_DIR = src
 INC_DIR = include
 ASSETS_DIR = assets
+BUILD_DIR = build
 
 #Libraries
 LIBS = -lncurses
@@ -10,28 +11,32 @@ LIBS = -lncurses
 CC = g++
 CFLAGS = -Wall -g -MMD -I${INC_DIR}
 
-pacman: main.o pieces.o screen.o game.o config.o coord.o
-	${CC} ${CFLAGS} main.o pieces.o screen.o game.o config.o coord.o ${LIBS} -o $@
+#build objects
+OBJS = main.o pieces.o screen.o game.o config.o coord.o
+BUILD_OBJS =  ${addprefix ${BUILD_DIR}/, ${OBJS}}
 
-main.o: ${SRC_DIR}/main.cpp
-	${CC} ${CFLAGS} -c  ${SRC_DIR}/main.cpp
+pacman: ${BUILD_OBJS}
+	${CC} ${CFLAGS} ${BUILD_OBJS} ${LIBS} -o $@
 
-screen.o: ${SRC_DIR}/screen.cpp
-	${CC} ${CFLAGS} -c  ${SRC_DIR}/screen.cpp
+${BUILD_DIR}/main.o: ${SRC_DIR}/main.cpp
+	${CC} ${CFLAGS} -c  ${SRC_DIR}/main.cpp -o $@
 
-pieces.o: ${SRC_DIR}/pieces.cpp
-	${CC} ${CFLAGS} -c  ${SRC_DIR}/pieces.cpp
+${BUILD_DIR}/screen.o: ${SRC_DIR}/screen.cpp
+	${CC} ${CFLAGS} -c  ${SRC_DIR}/screen.cpp -o $@
 
-game.o: ${SRC_DIR}/game.cpp
-	${CC} ${CFLAGS} -c  ${SRC_DIR}/game.cpp
+${BUILD_DIR}/pieces.o: ${SRC_DIR}/pieces.cpp
+	${CC} ${CFLAGS} -c  ${SRC_DIR}/pieces.cpp -o $@
 
-config.o: ${SRC_DIR}/config.cpp
-	${CC} ${CFLAGS} -c  ${SRC_DIR}/config.cpp
+${BUILD_DIR}/game.o: ${SRC_DIR}/game.cpp
+	${CC} ${CFLAGS} -c  ${SRC_DIR}/game.cpp -o $@
 
-coord.o: ${SRC_DIR}/coord.cpp
-	${CC} ${CFLAGS} -c  ${SRC_DIR}/coord.cpp
+${BUILD_DIR}/config.o: ${SRC_DIR}/config.cpp
+	${CC} ${CFLAGS} -c  ${SRC_DIR}/config.cpp -o $@
+
+${BUILD_DIR}/coord.o: ${SRC_DIR}/coord.cpp
+	${CC} ${CFLAGS} -c  ${SRC_DIR}/coord.cpp -o $@
 
 clean:
-	rm *.o pacman
+	rm -rf ${BUILD_DIR} pacman
 
--include $(wildcard *.d)
+-include $(wildcard ${BUILD_DIR}/*.d)
