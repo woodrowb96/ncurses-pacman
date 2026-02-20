@@ -586,6 +586,7 @@ Coord Game::inky_target()
     case GhostState::chase:
     {
       target = two_infront_of_pacman() - m_blinky.location();
+      break;
     }
     case GhostState::scatter:
     {
@@ -785,7 +786,7 @@ void Game::calc_pacman_score()
     m_pacman.inc_points(m_clyde.value());
 
   if(m_inky.eaten())
-    m_pacman.inc_points(m_blinky.value());
+    m_pacman.inc_points(m_inky.value());
 }
 
 bool Game::check_pacman_eaten()
