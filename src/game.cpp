@@ -59,8 +59,7 @@ void Game::game_loop()
   m_game_win.print();
   print_stats();
 
-  while( (input = m_scrn.get_ch(InputMode::non_block)) != Inputs::QUIT )  //get input exit if quit
-  {
+  while( (input = m_scrn.get_ch(InputMode::non_block)) != Inputs::QUIT ) {  //get input exit if quit
 
     //move pieces
     move_pacman(input);
@@ -72,8 +71,7 @@ void Game::game_loop()
     //print game
     m_game_win.print();
 
-    if(!m_pacman.eaten())   //dont move ghost if pacman was eaten
-    {
+    if(!m_pacman.eaten()) {   //dont move ghost if pacman was eaten
       move_ghosts();
 
       //check for eaten pieces
@@ -100,8 +98,7 @@ void Game::game_loop()
     print_stats();
 
     //check for game over
-    if(m_pacman.lives() <= 0)
-    {
+    if(m_pacman.lives() <= 0) {
       if(!play_again())
         return;
       reset_game();
@@ -134,8 +131,7 @@ void Game::move_pacman(int input)
   Coord right = current + Coord{2,0};
   Coord left = current + Coord{-2,0};
 
-  switch(input)   //go to input direction
-  {
+  switch(input) {   //go to input direction
     case Inputs::UP:
     {
       if(!m_borders.in(up) && !m_inv_walls.in(up))   //check if direction is a collision
@@ -185,8 +181,7 @@ void Game::pacman_keep_moving()
   Coord right = current + Coord{2,0};
   Coord left = current + Coord{-2,0};
 
-  switch(m_pacman.momentum())   //go to current momentum
-  {
+  switch(m_pacman.momentum()) {   //go to current momentum
     case Momentum::up:
     {
       if(!m_borders.in(up) && !m_inv_walls.in(up))   //see if momentum direct is a collision
@@ -231,8 +226,7 @@ void Game::move_ghost(Ghost* ghost, Coord target)
   //use target to calculate ghosts destination
   Destination destination = calc_ghost_destination(ghost, target);
 
-  switch(destination)   //go to destination and move
-  {
+  switch(destination) {   //go to destination and move
     case Destination::go_up: 
     {
       ghost->up();
@@ -286,14 +280,10 @@ Game::Destination Game::calc_ghost_destination(Ghost* ghost, Coord target)
   //if it is valid then check if its the new minimum distance
 
   //can only turn around when in turn_around state
-  if(ghost->momentum() != Momentum::left || ghost->state() == GhostState::turn_around)
-  {
-    if(!m_borders.in(right))                             //cant go into borders
-    {
-      if(!m_inv_walls.in(right))                          //cant go into an inv wall
-      {
-        if(scaled_distance(right,target) <= min_distance)  //check if min distance
-        {
+  if(ghost->momentum() != Momentum::left || ghost->state() == GhostState::turn_around) {
+    if(!m_borders.in(right)) {                             //cant go into borders
+      if(!m_inv_walls.in(right)) {                          //cant go into an inv wall
+        if(scaled_distance(right,target) <= min_distance) {  //check if min distance
           destination = Destination::go_right;            //if it is update direction
           min_distance = scaled_distance(right,target);   //set new direction
         }
@@ -301,14 +291,10 @@ Game::Destination Game::calc_ghost_destination(Ghost* ghost, Coord target)
     }
   }
 
-  if(ghost->momentum() != Momentum::up || ghost->state() == GhostState::turn_around)
-  {
-    if( !m_borders.in(down))
-    {
-      if(!m_inv_walls.in(down) || ghost->state() == GhostState::eaten)  //we can go down through inv wall if eaten
-      {
-        if(scaled_distance(down,target) <= min_distance)
-        {
+  if(ghost->momentum() != Momentum::up || ghost->state() == GhostState::turn_around) {
+    if(!m_borders.in(down)) {
+      if(!m_inv_walls.in(down) || ghost->state() == GhostState::eaten) {  //we can go down through inv wall if eaten
+        if(scaled_distance(down,target) <= min_distance) {
           destination = Destination::go_down;
           min_distance = scaled_distance(down,target);
         }
@@ -316,14 +302,10 @@ Game::Destination Game::calc_ghost_destination(Ghost* ghost, Coord target)
     }
   }
 
-  if(ghost->momentum() != Momentum::right || ghost->state() == GhostState::turn_around)
-  {
-    if(!m_borders.in(left))
-    {
-      if(!m_inv_walls.in(left))
-      {
-        if(scaled_distance(left,target) <= min_distance)
-        {
+  if(ghost->momentum() != Momentum::right || ghost->state() == GhostState::turn_around) {
+    if(!m_borders.in(left)) {
+      if(!m_inv_walls.in(left)) {
+        if(scaled_distance(left,target) <= min_distance) {
           destination = Destination::go_left;
           min_distance = scaled_distance(left,target);
         }
@@ -331,14 +313,10 @@ Game::Destination Game::calc_ghost_destination(Ghost* ghost, Coord target)
     }
   }
 
-  if(ghost->momentum() != Momentum::down || ghost->state() == GhostState::turn_around)
-  {
-    if(!m_borders.in(up))
-    {
-      if(!m_inv_walls.in(up) || true)       //ghosts can always go up through inv walls
-      {
-        if(scaled_distance(up,target) <= min_distance)
-        {
+  if(ghost->momentum() != Momentum::down || ghost->state() == GhostState::turn_around) {
+    if(!m_borders.in(up)) {
+      if(!m_inv_walls.in(up) || true) {       //ghosts can always go up through inv walls
+        if(scaled_distance(up,target) <= min_distance) {
           destination = Destination::go_up;
           min_distance = scaled_distance(up,target);
         }
@@ -348,25 +326,17 @@ Game::Destination Game::calc_ghost_destination(Ghost* ghost, Coord target)
 
 
   //now we can check if ghost is boxed in in three directions exept one
-  if(destination == Destination::stay_still)
-  {
-    if(m_borders.in(left) && m_borders.in(right) && m_borders.in(up))
-    {
+  if(destination == Destination::stay_still) {
+    if(m_borders.in(left) && m_borders.in(right) && m_borders.in(up)) {
       if(!m_borders.in(down))                //if only one valid direction ghost can turn around
         destination = Destination::go_down;
-    }
-    else if(m_borders.in(left) && m_borders.in(right) && m_borders.in(down))
-    {
+    } else if(m_borders.in(left) && m_borders.in(right) && m_borders.in(down)) {
       if(!m_borders.in(up))
         destination = Destination::go_up;
-    }
-    else if(m_borders.in(left) && m_borders.in(up) && m_borders.in(down))
-    {
+    } else if(m_borders.in(left) && m_borders.in(up) && m_borders.in(down)) {
       if(!m_borders.in(right))
         destination = Destination::go_right;
-    }
-    else if(m_borders.in(right) && m_borders.in(up) && m_borders.in(down))
-    {
+    } else if(m_borders.in(right) && m_borders.in(up) && m_borders.in(down)) {
       if(!m_borders.in(left))
         destination = Destination::go_left;
     }
@@ -377,12 +347,9 @@ Game::Destination Game::calc_ghost_destination(Ghost* ghost, Coord target)
 
 void Game::check_for_warp(DynamicPiece* p)
 {
-  if(p->in(&m_left_warp))                 //if in left warp, jump to right warp
-  {
+  if(p->in(&m_left_warp)) {                 //if in left warp, jump to right warp
     p->jump(m_right_warp.location());
-  }
-  else if(p->in(&m_right_warp))          // if in right warp, jump to left warp
-  {
+  } else if(p->in(&m_right_warp)) {          // if in right warp, jump to left warp
     p->jump(m_left_warp.location());
   }
 }
@@ -391,8 +358,7 @@ Coord Game::random_target(Ghost* ghost)
 {
   enum class Direction{up,down,left,right};
 
-  switch(static_cast<Direction>( rand() % 4) ) //choose random direction
-  {
+  switch(static_cast<Direction>( rand() % 4) ) { //choose random direction
     case Direction::up:
     {
       return ghost->location() + Coord{0,-1};
@@ -416,8 +382,7 @@ Coord Game::random_target(Ghost* ghost)
 
 Coord Game::behind_target(Ghost* ghost)
 {
-  switch(ghost->momentum())   //look at momentum and go in oposite direction
-  {
+  switch(ghost->momentum()) {   //look at momentum and go in oposite direction
     case Momentum::up:
     {
       return ghost->location() + Coord{0,1};
@@ -446,8 +411,7 @@ Coord Game::blinky_target()
 {
   Coord target = m_blinky.location();
 
-  switch(m_blinky.state())    //look at state and determin target
-  {
+  switch(m_blinky.state()) {    //look at state and determin target
     case GhostState::chase:
     {
       target = m_pacman.location();   //blinkys chase target is just pacmans location
@@ -481,8 +445,7 @@ Coord Game::pinky_target()
 {
   Coord target = m_pinky.location();
 
-  switch(m_pinky.state())    //look at state and determin target
-  {
+  switch(m_pinky.state()) {    //look at state and determin target
     case GhostState::chase:
     {
       target = two_infront_of_pacman();     //pinky goes to a tile two infront of pac
@@ -514,8 +477,7 @@ Coord Game::pinky_target()
 
 Coord Game::two_infront_of_pacman()
 {
-  switch(m_pacman.momentum())
-  {
+  switch(m_pacman.momentum()) {
     case Momentum::up:
     {
       return m_pacman.location() + Coord{0,-2};
@@ -544,8 +506,7 @@ Coord Game::clyde_target()
 {
   Coord target = m_clyde.location();
 
-  switch(m_clyde.state())    //look at state and determin target
-  {
+  switch(m_clyde.state()) {    //look at state and determin target
     case GhostState::chase:
     {
       //clydes target is pacman, unless they are less than 8 spaces apart
@@ -584,8 +545,7 @@ Coord Game::inky_target()
 {
   Coord target = m_inky.location();
 
-  switch(m_inky.state())    //look at state and determin target
-  {
+  switch(m_inky.state()) {    //look at state and determin target
     case GhostState::chase:
     {
       target = two_infront_of_pacman() - m_blinky.location();
@@ -621,28 +581,21 @@ void Game::update_pursuit_state()
    * game alternates between chase and scatter mode for the whole game
    */
 
-  switch(m_pursuit_state)         // go to current state and calc next state
-  {
+  switch(m_pursuit_state) {         // go to current state and calc next state
     case PursuitState::chase:
-      if(m_pursuit_state_timer == GameConfig::CHASE_LENGTH)   //if timer is up
-      {
-        m_pursuit_state = PursuitState::scatter;  //go to scatter state 
+      if(m_pursuit_state_timer == GameConfig::CHASE_LENGTH) {   //if timer is up
+        m_pursuit_state = PursuitState::scatter;  //go to scatter state
         m_pursuit_state_timer = 0;                //and reset timer
-      }
-      else
-      {
+      } else {
         m_pursuit_state = PursuitState::chase;  //else stay in chase and keep countin up
         m_pursuit_state_timer++;
       }
       break;
     case PursuitState::scatter:
-      if(m_pursuit_state_timer == GameConfig::SCATTER_LENGTH)   //if timer is up
-      {
+      if(m_pursuit_state_timer == GameConfig::SCATTER_LENGTH) {   //if timer is up
         m_pursuit_state = PursuitState::chase;      //go to chase
         m_pursuit_state_timer = 0;                  //reset timer
-      }
-      else
-      {
+      } else {
         m_pursuit_state = PursuitState::scatter;  //else stay in scatter and keep countin up
         m_pursuit_state_timer++;
       }
@@ -666,57 +619,42 @@ void Game::update_ghost_state(Ghost* ghost)
    *
    */
 
-  switch(ghost->state())
-  {
+  switch(ghost->state()) {
     case GhostState::chase:
     case GhostState::scatter:
     {
-      if(m_power_ups.score())
-      {
+      if(m_power_ups.score()) {
         ghost->set_state(GhostState::turn_around);  //if power up scores, turn around
-      }
-      else
-      {
+      } else {
         ghost->set_state(m_pursuit_state);  //else look at pursuit_state and go to chase or scatter
       }
       break;
     }
     case GhostState::turn_around:
     {
-      if(ghost->eaten())
-      {
+      if(ghost->eaten()) {
         ghost->set_state(GhostState::eaten);      //if eaten, go to eaten state
-      }
-      else
-      {
+      } else {
         ghost->set_state(GhostState::frightened); //else go to frightened state
       }
       break;
     }
     case GhostState::frightened:
     {
-      if(ghost->eaten())
-      {
+      if(ghost->eaten()) {
         ghost->set_state(GhostState::eaten);            //if eaten go to eaten
-      }
-      else if(m_power_ups.state() == PowerUpState::off)
-      {
+      } else if(m_power_ups.state() == PowerUpState::off) {
         ghost->set_state(m_pursuit_state);              //if power up turns off go to chase or scatter
-      }
-      else
-      {
+      } else {
         ghost->set_state(GhostState::frightened);      //else stay frightened
       }
       break;
     }
     case GhostState::eaten:
     {
-      if(ghost->is_home())
-      {
-        ghost->set_state(m_pursuit_state);    //if we are home go back to chase/scatter 
-      }
-      else
-      {
+      if(ghost->is_home()) {
+        ghost->set_state(m_pursuit_state);    //if we are home go back to chase/scatter
+      } else {
         ghost->set_state(GhostState::eaten);    //else stay eaten
       }
       break;
@@ -734,34 +672,25 @@ void Game::update_ghost_states()
 
 void Game::update_power_ups_state()
 {
-  switch(m_power_ups.state())   //go to state, and calc next state
-  {
+  switch(m_power_ups.state()) {   //go to state, and calc next state
     case PowerUpState::off:
     {
-      if(m_power_ups.score())
-      {
+      if(m_power_ups.score()) {
         m_power_up_timer = GameConfig::POWER_UP_LENGTH; //if we scored a powerup, start power up timer
         m_power_ups.set_state(PowerUpState::active);   //go to active state
-      }
-      else
-      {
+      } else {
         m_power_ups.set_state(PowerUpState::off);     //else stay turned off
       }
       break;
     }
     case PowerUpState::active:
     {
-      if(m_power_ups.score())
-      {
+      if(m_power_ups.score()) {
         m_power_up_timer = GameConfig::POWER_UP_LENGTH; //if we scored another powerup, reset timer
         m_power_ups.set_state(PowerUpState::active);  //stay activated
-      }
-      else if(m_power_up_timer <= 0)
-      {
+      } else if(m_power_up_timer <= 0) {
         m_power_ups.set_state(PowerUpState::off);   //if timer is up, turn off power up
-      }
-      else
-      {
+      } else {
         m_power_up_timer--;                           //else stay active, and dec timer
         m_power_ups.set_state(PowerUpState::active);
       }
@@ -794,8 +723,7 @@ void Game::calc_pacman_score()
 
 bool Game::check_pacman_eaten()
 {
-  if(!m_pacman.eaten()) //pacman can only be eaten once
-  {
+  if(!m_pacman.eaten()) { //pacman can only be eaten once
     //can only be eaten by one ghost at a time, so check each ghost
     //individually and return if eaten
     if(m_pacman.check_eaten(&m_blinky))
@@ -830,17 +758,16 @@ bool Game::check_ghosts_eaten()
 {
   bool ghost_eaten {false};
 
-  if(!m_pacman.eaten())     //cant eat a ghost if pacman is eaten
-    {
-      if(!m_blinky.eaten())     //ghost cant be eaten twice
-        ghost_eaten = m_blinky.check_eaten(&m_pacman);
-      if(!m_pinky.eaten())
-        ghost_eaten = ghost_eaten || m_pinky.check_eaten(&m_pacman);
-      if(!m_inky.eaten())
-        ghost_eaten = ghost_eaten || m_inky.check_eaten(&m_pacman);
-      if(!m_clyde.eaten())
-        ghost_eaten = ghost_eaten || m_clyde.check_eaten(&m_pacman);
-    }
+  if(!m_pacman.eaten()) {     //cant eat a ghost if pacman is eaten
+    if(!m_blinky.eaten())     //ghost cant be eaten twice
+      ghost_eaten = m_blinky.check_eaten(&m_pacman);
+    if(!m_pinky.eaten())
+      ghost_eaten = ghost_eaten || m_pinky.check_eaten(&m_pacman);
+    if(!m_inky.eaten())
+      ghost_eaten = ghost_eaten || m_inky.check_eaten(&m_pacman);
+    if(!m_clyde.eaten())
+      ghost_eaten = ghost_eaten || m_clyde.check_eaten(&m_pacman);
+  }
   return ghost_eaten;
 }
 
@@ -928,8 +855,7 @@ void Game::reset_piece_flags()
 
 void Game::blink_pieces(const vector<Piece*>& pieces, int n_times)
 {
-  for(int i = 0; i < n_times; i++)    //blink each piece n_times
-  {
+  for(int i = 0; i < n_times; i++) {    //blink each piece n_times
     m_game_win.print();
     pause(Pause::MEDIUM);
 
@@ -950,13 +876,10 @@ void Game::blink_pieces(const vector<Piece*>& pieces, int n_times)
 void Game::blink_power_ups()
 {
   //blink power ups every POWER_UP_BLINK_LENGTH turns
-  if(m_power_up_blink_timer <= 0)
-  {
+  if(m_power_up_blink_timer <= 0) {
     m_power_ups.blink();
     m_power_up_blink_timer = ::GameConfig::POWER_UP_BLINK_LENGTH;
-  }
-  else
-  {
+  } else {
     m_power_up_blink_timer--;
   }
 }

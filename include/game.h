@@ -12,7 +12,8 @@
 
 enum class PursuitState {chase, scatter};     //game alternates between chase and scatter modes
 
-class Game{
+class Game
+{
   public:
     Game();
     void run();

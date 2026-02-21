@@ -16,7 +16,8 @@
 
 enum class InputMode {non_block, block};
 
-class Screen{
+class Screen
+{
   public:
     Screen();
     ~Screen();
@@ -32,7 +33,8 @@ class Screen{
 // This class is the abstract base class for all window sub_types.
 /********************************************************************************/
 
-class Window{
+class Window
+{
   public:
     ~Window();
 

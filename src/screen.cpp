@@ -51,7 +51,9 @@ Window::Window(int height, int length, Coord stdscr_location)
 
 Window::~Window()
 {
-  if(m_window) delwin(m_window);
+  if(m_window) {
+    delwin(m_window);
+  }
 }
 
 /********************************** GameWindow **********************************/
@@ -65,12 +67,15 @@ void GameWindow::print()
   werase(m_window);
 
   //draw each piece onto its layer
-  for(Piece* piece : m_background)
+  for(Piece* piece : m_background) {
     piece->draw(m_window);
-  for(Piece* piece : m_midground)
+  }
+  for(Piece* piece : m_midground) {
     piece->draw(m_window);
-  for(Piece* piece : m_foreground)
+  }
+  for(Piece* piece : m_foreground) {
     piece->draw(m_window);
+  }
 
   //print the window onto the stdscrn
   wrefresh(m_window);
@@ -78,16 +83,18 @@ void GameWindow::print()
 
 void GameWindow::add(Piece* piece, WindowLayer layer)
 {
-  switch(layer)
-  {
-    case WindowLayer::background:
+  switch(layer) {
+    case WindowLayer::background: {
       m_background.push_back(piece);
       break;
-    case WindowLayer::midground:
+    }
+    case WindowLayer::midground: {
       m_midground.push_back(piece);
       break;
-    case WindowLayer::foreground: 
+    }
+    case WindowLayer::foreground: {
       m_foreground.push_back(piece);
+    }
   }
 }
 

@@ -15,8 +15,9 @@ Piece::Piece(Coord location, list<Coord> shape, char symbol)
   m_location {location},
   m_symbol {symbol}
 {
-  for(Coord coord : shape)
+  for(Coord coord : shape) {
     m_shape.push_back(coord);
+  }
 }
 
 const list<Coord>& Piece::shape() const { return m_shape; }
@@ -40,29 +41,29 @@ void Piece::blink()
 bool Piece::in(const Piece* p)
 {
   //compare each of our coords to each coord of p
-  for(Coord my_coord : m_shape)
-    for(Coord their_coord : p->shape())
-    {
+  for(Coord my_coord : m_shape) {
+    for(Coord their_coord : p->shape()) {
       //need to add location to each coord to get true location on screen
       if( (my_coord + m_location) == (their_coord + p->location()) )
         return true;
     }
+  }
   return false;     //if no coords overlap return false
 }
 
 bool Piece::in(Coord c)
 {
-  for(Coord my_coord : m_shape)
-    if( (my_coord + m_location) == c) //add m_location to m_coord to get true location on scrn
+  for(Coord my_coord : m_shape) {
+    if( (my_coord + m_location) == c) {//add m_location to m_coord to get true location on scrn
       return true;
-
+    }
+  }
   return false;
 }
 
 void Piece::draw(WINDOW* w)
 {
-  for(Coord coord : m_shape)
-  {
+  for(Coord coord : m_shape) {
     Coord location =  coord + m_location;
     mvwaddch(w, location.y, location.x, symbol());
   }
@@ -151,14 +152,14 @@ int PacMan::lives() const { return m_lives; }
 
 void PacMan::dec_lives()
 {
-  if(m_lives > 0)     //cant have negative lives
+  if(m_lives > 0) {     //cant have negative lives
     m_lives--;
+  }
 }
 
 bool PacMan::check_eaten(Ghost* ghost)
 {
-  if(ghost->eats(this))               //if ghost eats pacman
-  {
+  if(ghost->eats(this)) {             //if ghost eats pacman
     m_eaten_flag = EatenFlag::eaten;  //set eaten flag
     m_lives--;                        //dec lives
     return true;
@@ -203,35 +204,36 @@ void Ghost::set_state(GhostState new_state)
 
 void Ghost::set_state(PursuitState pursuit_state)
 {
-  switch(pursuit_state)           //look at pursuit state
-  {
-    case PursuitState::chase:         //set either chase or scatter state
+  switch(pursuit_state) {
+    case PursuitState::chase: {
       set_state(GhostState::chase);
       break;
-    case PursuitState::scatter:
+    }
+    case PursuitState::scatter: {
       set_state(GhostState::scatter);
       break;
+    }
   }
 }
 
 
 void Ghost::update_symbol()
 {
-  switch(m_ghost_state)
-  {
+  switch(m_ghost_state) {
     case GhostState::chase:
-    case GhostState::scatter:
+    case GhostState::scatter: {
       set_symbol(m_chase_symbol);
       break;
-
+    }
     case GhostState::frightened:
-    case GhostState::turn_around:
+    case GhostState::turn_around: {
       set_symbol(m_fright_symbol);
       break;
-
-    case GhostState::eaten:
+    }
+    case GhostState::eaten: {
       set_symbol(m_eaten_symbol);
       break;
+    }
   }
 }
 
@@ -240,20 +242,21 @@ int Ghost::value() { return m_value; }
 bool Ghost::eats(PacMan* p)
 {
   //can only eat pacman in chase and scatter states
-  if(m_ghost_state == GhostState::chase || m_ghost_state == GhostState::scatter) 
+  if(m_ghost_state == GhostState::chase || m_ghost_state == GhostState::scatter) {
     return in(p);
+  }
   return false;
 }
 
 bool Ghost::check_eaten(PacMan* p)
 {
   //can only be eaten in frightened and turn_around states
-  if(m_ghost_state == GhostState::frightened || m_ghost_state == GhostState::turn_around)
-    if( in(p) )
-    {
+  if(m_ghost_state == GhostState::frightened || m_ghost_state == GhostState::turn_around) {
+    if( in(p) ) {
       m_eaten_flag = EatenFlag::eaten;    //set eaten flag
       return true;
     }
+  }
   m_eaten_flag = EatenFlag::not_eaten;    //set not eaten flag
   return false;
 }
@@ -354,13 +357,13 @@ bool ScoringPiece::check_score(Piece* p)
    *
    */
   for(Coord p_c: p->shape())
-    for(Coord c : m_shape)
-      if( (c + m_location) == (p_c + p->location()))   //add locations to get true screen location
-      {
+    for(Coord c : m_shape) {
+      if( (c + m_location) == (p_c + p->location())) {   //add locations to get true screen location
         m_shape.remove(c);                  //remove coord
         m_score_flag = ScoreFlag::score;    //set score flag
         return true;
       }
+    }
   m_score_flag = ScoreFlag::no_score;   //if no score set no_score flag
   return false;
 }
@@ -393,7 +396,7 @@ void ScoringPiece::reset_score_flag()
 /************   Powerups   **************/
 
 PowerUps::PowerUps()
-  :ScoringPiece(Locations::TOP_LEFT, Shapes::POWER_UPS, Symbols::POWER_UPS, GameConfig::POWER_UP_VALUE) {};
+  :ScoringPiece(Locations::TOP_LEFT, Shapes::POWER_UPS, Symbols::POWER_UPS, GameConfig::POWER_UP_VALUE) {}
 
 PowerUpState PowerUps::state() { return m_power_up_state; }
 

@@ -93,7 +93,7 @@ class DynamicPiece : public Piece
 
 class Ghost;    //forward decleration of Ghost
 
-enum class EatenFlag{not_eaten, eaten};  //used to indicate if piece was eaten
+enum class EatenFlag {not_eaten, eaten};  //used to indicate if piece was eaten
 
 class PacMan : public DynamicPiece
 {
@@ -123,7 +123,7 @@ class PacMan : public DynamicPiece
 
 enum class PursuitState;    //forward decleration from game.h
 
-enum class GhostState{chase, scatter, turn_around, frightened, eaten};
+enum class GhostState {chase, scatter, turn_around, frightened, eaten};
 
 /*
  * Ghosts have the following states, which determin behavior
@@ -281,7 +281,8 @@ class ScoringPiece : public Piece
 
 ////////////  Points  /////////////////////
 
-class Points : public ScoringPiece{
+class Points : public ScoringPiece
+{
   public:
     Points();
 
@@ -290,9 +291,10 @@ class Points : public ScoringPiece{
 
 ////////////  Powerups  /////////////////////
 
-enum class PowerUpState{off, active};   //power up state is either off or activated
+enum class PowerUpState {off, active};   //power up state is either off or activated
 
-class PowerUps : public ScoringPiece{
+class PowerUps : public ScoringPiece
+{
   public:
     PowerUps();
 
