@@ -1,16 +1,13 @@
 #include "game.h"
-#include "config.h"
-#include "coord.h"
-#include "pieces.h"
 
-#include <string>
-#include<limits>
-#include<thread>
-#include<chrono>
+#include <limits>
+#include <thread>
+#include <chrono>
 
 using std::string;
 using std::rand;
 using std::to_string;
+using std::vector;
 
 Game::Game()
 :

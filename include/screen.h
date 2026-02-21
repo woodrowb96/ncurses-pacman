@@ -8,9 +8,6 @@
 #include <string>
 #include <ncurses.h>
 
-using std::vector;
-using std::string;
-
 /*********Screen *************/
 
 /*
@@ -80,9 +77,9 @@ class GameWindow : public Window
     void add(Piece* piece, WindowLayer layer);  //add piece to a layer on screen
 
   private:
-    vector<Piece*> m_background;      //Pieces are stored in their layer vector
-    vector<Piece*> m_midground;
-    vector<Piece*> m_foreground;
+    std::vector<Piece*> m_background;      //Pieces are stored in their layer vector
+    std::vector<Piece*> m_midground;
+    std::vector<Piece*> m_foreground;
 };
 
 /****** TextWindow ***********/
@@ -97,10 +94,10 @@ class TextWindow : public Window{
 
     void print() override;          //print text
 
-    void update_text(string text);  //update what text should be printed to screen
+    void update_text(std::string text);  //update what text should be printed to screen
 
   private:
-    string m_text;    //curent text being printed
+    std::string m_text;    //curent text being printed
 
 
 };

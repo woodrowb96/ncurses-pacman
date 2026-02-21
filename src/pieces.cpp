@@ -1,10 +1,9 @@
 #include "pieces.h"
-#include "coord.h"
-#include "config.h"
 #include "game.h"
 
 #include <stdlib.h>
-#include <ncurses.h>
+
+using std::list;
 
 /*****************    Piece   **********************************/
 Piece::Piece(Coord location, list<Coord> shape, char symbol)

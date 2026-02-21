@@ -3,6 +3,7 @@
 
 #include "coord.h"
 #include <string>
+#include <list>
 
 namespace Symbols {
   const char PACMAN  {'<'};
@@ -25,12 +26,12 @@ namespace Symbols {
 
 // shapes and location coords are generated in config.cpp
 namespace Shapes{
-  const list<Coord> POINT { {0,0} };
-  extern const list<Coord> BOARDER;
-  extern const list<Coord> INV_WALLS;
-  extern const list<Coord> POINTS;
-  extern const list<Coord> POWER_UPS;
-  extern const list<Coord> GHOST_HOME;
+  const std::list<Coord> POINT { {0,0} };
+  extern const std::list<Coord> BOARDER;
+  extern const std::list<Coord> INV_WALLS;
+  extern const std::list<Coord> POINTS;
+  extern const std::list<Coord> POWER_UPS;
+  extern const std::list<Coord> GHOST_HOME;
 }
 
 namespace Locations{

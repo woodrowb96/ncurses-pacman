@@ -1,11 +1,10 @@
 #include "config.h"
 
-#include <list>
-#include <string>
 #include <fstream>
 
 using std::ifstream;
 using std::string;
+using std::list;
 
 
 //used to read in shape coordinates from a txt file and return them as a list<Cooord>

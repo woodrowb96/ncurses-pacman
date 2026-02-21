@@ -1,11 +1,7 @@
 #include "screen.h"
-#include "pieces.h"
-#include "coord.h"
-
-#include <ncurses.h>
-#include <vector>
 
 using std::vector;
+using std::string;
 
 
 /********* Screen *************/

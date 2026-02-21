@@ -4,6 +4,8 @@
 #include "screen.h"
 #include "pieces.h"
 
+#include <vector>
+
 /*
  * The game class runs the pacman game and handles all state and movement logic.
  */
@@ -99,7 +101,7 @@ class Game{
     void reset_piece_flags();
 
     //blink methods
-    void blink_pieces(const vector<Piece*>& pieces, int n_times);
+    void blink_pieces(const std::vector<Piece*>& pieces, int n_times);
     void blink_power_ups();
 
     //play again prompt

@@ -1,10 +1,6 @@
 #ifndef COORD_H
 #define COORD_H
 
-#include<list>
-
-using std::list;
-
 struct Coord{
   int x;
   int y;

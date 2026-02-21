@@ -7,8 +7,6 @@
 #include <list>
 #include <ncurses.h>
 
-using std::list;
-
 ////////////  Piece //////////
 /*
  * A piece is the most generic thing that can be printed onto the screen
@@ -27,9 +25,9 @@ using std::list;
 class Piece
 {
   public:
-    Piece(Coord location, list<Coord> shape, char symbol);
+    Piece(Coord location, std::list<Coord> shape, char symbol);
 
-    const list<Coord>& shape() const;
+    const std::list<Coord>& shape() const;
 
     Coord location() const;
     char symbol() const;      //will return the blinked symbol, not necessarily m_symbol
@@ -44,7 +42,7 @@ class Piece
 
   protected:
     Coord m_location;             //pieces location on screen
-    list<Coord> m_shape;          //coords describing pieces shape
+    std::list<Coord> m_shape;          //coords describing pieces shape
 
     char m_symbol;
 
@@ -71,7 +69,7 @@ enum Momentum {up, down, left, right, still};   //used to indicate pieces curren
 class DynamicPiece : public Piece
 {
   public:
-    DynamicPiece(Coord location, list<Coord> shape, char symbol, Momentum start_m);
+    DynamicPiece(Coord location, std::list<Coord> shape, char symbol, Momentum start_m);
 
     Momentum momentum() const;
 
@@ -263,7 +261,7 @@ enum class ScoreFlag {no_score, score};   //used to indicate if there was a scor
 class ScoringPiece : public Piece
 {
   public:
-    ScoringPiece(Coord location, list<Coord> shape, char symbol, int value);
+    ScoringPiece(Coord location, std::list<Coord> shape, char symbol, int value);
 
     int value();
 
@@ -276,7 +274,7 @@ class ScoringPiece : public Piece
 
     void reset_score_flag();
   private:
-    list<Coord> m_original_shape;     //original shape of points
+    std::list<Coord> m_original_shape;     //original shape of points
     int m_value;
 
     ScoreFlag m_score_flag {ScoreFlag::no_score};
