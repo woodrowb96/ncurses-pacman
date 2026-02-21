@@ -9,94 +9,87 @@ using std::ifstream;
 using std::string;
 using std::list;
 
+constexpr const char* LOCATIONS_FILE {"assets/level_1_locations.txt"};
+constexpr const char* SHAPES_FILE {"assets/level_1_shapes.txt"};
 
-//used to read in shape coordinates from a txt file and return them as a list<Cooord>
-//function will look for charecters matching symbol in file and add their coordinates
-//to the list
-const list<Coord> gen_coordinates(string file, char symbol)
+//calculate the coordinates of the shape formed by the symbol chars in the file
+const list<Coord> gen_coordinates(const string& file, char symbol)
 {
+  ifstream ist{file};
+  char c {'\0'};
+  list<Coord> coords;
+  Coord coord {0,0};   //the top left of the file will have coord (0,0)
 
-  list<Coord> coords;       //list to store coords
-
-  ifstream ist{file};       //open file
-
-  char c {'\0'};            //char to read file into
-
-  int x {0};                //x and y coords, used to calc shapes coords as they are read in
-  int y {0};
-
-  while(ist>> std::noskipws >> c)     //read in file, dont skip white space
-  {
-    if(c == symbol)                   //if symbol matches shapes symbol
-    {
-      coords.push_back(Coord{x,y});   //add coord to list
-      x++;                            //increment x
+  //dont skip the white space as we loop
+  //we want it to calc the coords
+  while(ist>> std::noskipws >> c) {
+    if(c == symbol) {               //if we are at a symbol
+      coords.push_back(coord);      //save the coord
+      coord.x++;                    //move x to the right
     }
-    else if(c == 'e')   //look for 'e' to indicate end of line
-    {
-      x = 0;            //reset x coord
-      y++;              //move y to next line
-    } 
-    else 
-    {
-      x++;        //increment x if we havent reached the end of line
+    else if(c == 'e') {             //else if we are at the end of the line
+      coord.x = 0;                  //reset x
+      coord.y++;                    //move y down a line
+    }
+    else {                          //else
+      coord.x++;                    //just move x to the right
     }
   }
+
   return coords;
 }
 
-
-//reads in a single coord from a text file, used to indicate a pieces location on the screen
-const Coord gen_coordinate(string file, char symbol)
+//Same as gen_coordinates, but returns the coord of the first 'symbol' it sees
+const Coord gen_coordinate(const string& file, char symbol)
 {
-
   ifstream ist{file};
-
   char c{' '};
-  int x{0};
-  int y{0};
+  Coord coord {0,0};
 
-  while(ist>> std::noskipws >> c)
-  {
-    if(c == symbol) 
-    {
-      return Coord{x,y};
+  while(ist>> std::noskipws >> c) {
+    if(c == symbol) {
+      return coord;     //return as soon as we hit 'symbol'
     }
-    else if(c == 'e') 
-    {
-      x = 0;
-      y++;
-    } 
-    else
-    {
-      x++;
+    else if(c == 'e') {
+      coord.x = 0;
+      coord.y++;
+    }
+    else {
+      coord.x++;
     }
   }
-  return Coord{x,y};
+
+  return Coord{-1,-1};    //return (-1,-1) if the symbols not in the file
 }
 
 
-//Piece locations
-const Coord Locations::PACMAN_START = gen_coordinate("assets/level_1_locations.txt", '<');
+/**************** PIECE LOCATIONS ********************************/
+//pacman
+const Coord Locations::PACMAN_START = gen_coordinate(LOCATIONS_FILE, '<');
 
-const Coord Locations::PINKY_START = gen_coordinate("assets/level_1_locations.txt", 'P');
-const Coord Locations::PINKY_SCATTER = gen_coordinate("assets/level_1_locations.txt", 'p');
+//pinky
+const Coord Locations::PINKY_START = gen_coordinate(LOCATIONS_FILE, 'P');
+const Coord Locations::PINKY_SCATTER = gen_coordinate(LOCATIONS_FILE, 'p');
 
-const Coord Locations::BLINKY_START = gen_coordinate("assets/level_1_locations.txt", 'B');
-const Coord Locations::BLINKY_SCATTER = gen_coordinate("assets/level_1_locations.txt", 'b');
+//blinky
+const Coord Locations::BLINKY_START = gen_coordinate(LOCATIONS_FILE, 'B');
+const Coord Locations::BLINKY_SCATTER = gen_coordinate(LOCATIONS_FILE, 'b');
 
-const Coord Locations::CLYDE_START = gen_coordinate("assets/level_1_locations.txt", 'C');
-const Coord Locations::CLYDE_SCATTER = gen_coordinate("assets/level_1_locations.txt", 'c');
+//clyde
+const Coord Locations::CLYDE_START = gen_coordinate(LOCATIONS_FILE, 'C');
+const Coord Locations::CLYDE_SCATTER = gen_coordinate(LOCATIONS_FILE, 'c');
 
-const Coord Locations::INKY_START = gen_coordinate("assets/level_1_locations.txt", 'I');
-const Coord Locations::INKY_SCATTER = gen_coordinate("assets/level_1_locations.txt", 'i');
+//inky
+const Coord Locations::INKY_START = gen_coordinate(LOCATIONS_FILE, 'I');
+const Coord Locations::INKY_SCATTER = gen_coordinate(LOCATIONS_FILE, 'i');
 
-const Coord Locations::LEFT_WARP = gen_coordinate("assets/level_1_locations.txt", 'l');
-const Coord Locations::RIGHT_WARP = gen_coordinate("assets/level_1_locations.txt", 'r');
+//warps
+const Coord Locations::LEFT_WARP = gen_coordinate(LOCATIONS_FILE, 'l');
+const Coord Locations::RIGHT_WARP = gen_coordinate(LOCATIONS_FILE, 'r');
 
-//Piece shapes
-const list<Coord> Shapes::BORDER = gen_coordinates("assets/level_1_shapes.txt", '#');
-const list<Coord> Shapes::INV_WALLS = gen_coordinates("assets/level_1_shapes.txt", 'x');
-const list<Coord> Shapes::POINTS = gen_coordinates("assets/level_1_shapes.txt", '.');
-const list<Coord> Shapes::POWER_UPS = gen_coordinates("assets/level_1_shapes.txt", '!');
-const list<Coord> Shapes::GHOST_HOME = gen_coordinates("assets/level_1_shapes.txt", '$');
+/**************** PIECE SHAPES ********************************/
+const list<Coord> Shapes::BORDER = gen_coordinates(SHAPES_FILE, '#');
+const list<Coord> Shapes::INV_WALLS = gen_coordinates(SHAPES_FILE, 'x');
+const list<Coord> Shapes::POINTS = gen_coordinates(SHAPES_FILE, '.');
+const list<Coord> Shapes::POWER_UPS = gen_coordinates(SHAPES_FILE, '!');
+const list<Coord> Shapes::GHOST_HOME = gen_coordinates(SHAPES_FILE, '$');
