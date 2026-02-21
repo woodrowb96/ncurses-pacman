@@ -10,14 +10,13 @@
 using std::vector;
 using std::string;
 
-
-/************************** Screen ********************************/
+/************************************ Screen ************************************/
 
 Screen::Screen()
 {
   initscr();              //start ncurses stdscrn
   noecho();               //dont print keypresses to screen
-  keypad(stdscr, TRUE);   //let ncurses read funcion keys
+  keypad(stdscr, TRUE);   //let ncurses read function keys
   curs_set(0);            //dont print cursor to screen
   refresh();              //refresh screen to start stdscrn
 }
@@ -38,7 +37,7 @@ int Screen::get_ch(InputMode input_mode)
   return input;
 }
 
-/********************* Window ***********************************/
+/************************************ Window ************************************/
 
 Window::Window(int height, int length, Coord stdscr_location)
   :
@@ -55,32 +54,33 @@ Window::~Window()
   if(m_window) delwin(m_window);
 }
 
-/********* GameWindow **********************/
+/********************************** GameWindow **********************************/
 
 GameWindow::GameWindow(int height, int length, Coord stdscr_location)
   : Window(height, length, stdscr_location) {}
 
 void GameWindow::print()
 {
-  werase(m_window);                  //erase previous print
+  //clear the previous print
+  werase(m_window);
 
-  for(Piece* piece : m_background)   //loop through shape on each layer and print
-    piece->print(m_window);
-
+  //draw each piece onto its layer
+  for(Piece* piece : m_background)
+    piece->draw(m_window);
   for(Piece* piece : m_midground)
-    piece->print(m_window);
-
+    piece->draw(m_window);
   for(Piece* piece : m_foreground)
-    piece->print(m_window);
+    piece->draw(m_window);
 
-  wrefresh(m_window);                //refresh window to print to stdscrn
+  //print the window onto the stdscrn
+  wrefresh(m_window);
 }
 
 void GameWindow::add(Piece* piece, WindowLayer layer)
 {
-  switch(layer)                       //go to layer
+  switch(layer)
   {
-    case WindowLayer::background:     //and add piece to layers piece vector
+    case WindowLayer::background:
       m_background.push_back(piece);
       break;
     case WindowLayer::midground:
@@ -91,19 +91,19 @@ void GameWindow::add(Piece* piece, WindowLayer layer)
   }
 }
 
-/********* TextWindow **********************/
+/********************************** TextWindow **********************************/
 
 TextWindow::TextWindow(int height, int length, Coord stdscr_location)
   : Window(height, length, stdscr_location) {}
 
 void TextWindow::print()
 {
-  werase(m_window);
-  waddstr(m_window, m_text.c_str());    //add string to window
-  wrefresh(m_window);
+  werase(m_window);                     //clear the previous prints
+  waddstr(m_window, m_text.c_str());    //draw text onto window
+  wrefresh(m_window);                   //print the window onto stdscrn
 }
 
-void TextWindow::update_text(string text)
+void TextWindow::update_text(const string& text)
 {
   m_text = text;
 }

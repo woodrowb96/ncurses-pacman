@@ -8,11 +8,12 @@
 #include <string>
 #include <ncurses.h>
 
-/*********Screen *************/
+/************************************ Screen ************************************/
 // The screen class is a wrapper around ncurses that we use to:
 //  - initialize the ncurses stdscrn
 //  - get user input (blocking and non_blocking modes)
-/****************************/
+/********************************************************************************/
+
 enum class InputMode {non_block, block};
 
 class Screen{
@@ -23,13 +24,14 @@ class Screen{
     int get_ch(InputMode input_mode = InputMode::block);
 };
 
-/******************** Window ***************************************/
-//The window class is used to:
+/************************************ Window ************************************/
+// The window class is used to:
 //  -create and initialize an ncurses subwindow on the stdscrn
 //  -provide a virtual print() interface for its children
 //
-//This class is the abstract base class for all window sub_types.
-/******************************************************************/
+// This class is the abstract base class for all window sub_types.
+/********************************************************************************/
+
 class Window{
   public:
     ~Window();
@@ -41,21 +43,18 @@ class Window{
 
     int   m_height;
     int   m_length;
-    Coord m_stdscr_location;      //window's location on the stdscrn
+    Coord m_stdscr_location;      //this window's location on the main stdscrn
 
     WINDOW* m_window  {nullptr};  //the windows ncurses handle
 };
 
-/************  GameWindow *************/
-
-/*
- *  GameWindow is used to print Pieces onto the screen
- *
- *  GW has three layers pieces can be printed onto.
- *
- *  Pieces are added to the window and placed onto their layer using the add method
- *
- */
+/********************************** GameWindow **********************************/
+// The GameWindow is the subwindow we use to print the actual gameplay of our game.
+//
+// This class can:
+//   -add pieces to background, midground or foreground layers
+//   -print all three layers to the screen (background in the back, foreground on top)
+/********************************************************************************/
 
 enum class WindowLayer {background, midground, foreground};
 
@@ -64,34 +63,33 @@ class GameWindow : public Window
   public:
     GameWindow(int height, int length, Coord stdscr_location);
 
-    void print() override;      //print pieces to the screen
-
-    void add(Piece* piece, WindowLayer layer);  //add piece to a layer on screen
+    void print() override;
+    void add(Piece* piece, WindowLayer layer);
 
   private:
-    std::vector<Piece*> m_background;      //Pieces are stored in their layer vector
+    std::vector<Piece*> m_background;
     std::vector<Piece*> m_midground;
     std::vector<Piece*> m_foreground;
 };
 
-/****** TextWindow ***********/
+/********************************** TextWindow **********************************/
+// The TextWindow is a subwindow for printing text onto the screen
+//
+// This class can:
+//   -update text we are printing
+//   -print the text onto the screen
+/********************************************************************************/
 
-/*
- * textwindow is used to print strings of text to the screen
- */
-
-class TextWindow : public Window{
+class TextWindow : public Window
+{
   public:
     TextWindow(int height, int length, Coord stdscr_location);
 
-    void print() override;          //print text
-
-    void update_text(std::string text);  //update what text should be printed to screen
+    void print() override;
+    void update_text(const std::string& text);
 
   private:
-    std::string m_text;    //curent text being printed
-
-
+    std::string m_text;
 };
 
 #endif

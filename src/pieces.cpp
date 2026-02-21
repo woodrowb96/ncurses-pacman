@@ -59,21 +59,12 @@ bool Piece::in(Coord c)
   return false;
 }
 
-void Piece::print(WINDOW* w)
-{
-  for(Coord coord : m_shape)           //loop through shape
-  {
-    Coord location =  coord + m_location;           //add m_location to get screen location
-    mvwaddch(w, location.y, location.x, symbol());  //print to window
-  }
-}
-
-void Piece::print()
+void Piece::draw(WINDOW* w)
 {
   for(Coord coord : m_shape)
   {
-    Coord location = coord + m_location;
-    mvaddch(location.y, location.x, symbol());    //print to ncurses std_scrn
+    Coord location =  coord + m_location;
+    mvwaddch(w, location.y, location.x, symbol());
   }
 }
 

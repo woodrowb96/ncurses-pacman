@@ -37,8 +37,7 @@ class Piece
     bool in(const Piece* p); //true if any of p's coords overlap with this piece
     bool in(Coord c);        //true if coord overlaps with this piece
 
-    void print(WINDOW* w);        //print to window
-    void print();                 //print to ncurses std screen
+    void draw(WINDOW* w);
 
   protected:
     Coord m_location;             //pieces location on screen
