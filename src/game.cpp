@@ -28,7 +28,7 @@ Game::Game()
   m_game_win.add(&m_clyde, WindowLayer::midground);
   m_game_win.add(&m_inky, WindowLayer::midground);
   //add pieces to background
-  m_game_win.add(&m_boarders, WindowLayer::background);
+  m_game_win.add(&m_borders, WindowLayer::background);
   m_game_win.add(&m_points, WindowLayer::background);
   m_game_win.add(&m_power_ups, WindowLayer::background);
 }
@@ -138,7 +138,7 @@ void Game::move_pacman(int input)
   {
     case Inputs::UP:
     {
-      if(!m_boarders.in(up) && !m_inv_walls.in(up))   //check if direction is a collision
+      if(!m_borders.in(up) && !m_inv_walls.in(up))   //check if direction is a collision
         m_pacman.up();                                //if not move
       else
         pacman_keep_moving();                         //else keep moving in momentum direction
@@ -146,7 +146,7 @@ void Game::move_pacman(int input)
     }
     case Inputs::DOWN:
     {
-      if(!m_boarders.in(down) && !m_inv_walls.in(down))
+      if(!m_borders.in(down) && !m_inv_walls.in(down))
         m_pacman.down();
       else 
         pacman_keep_moving();
@@ -154,7 +154,7 @@ void Game::move_pacman(int input)
     }
     case Inputs::RIGHT:
     {
-      if(!m_boarders.in(right) && !m_inv_walls.in(right)) 
+      if(!m_borders.in(right) && !m_inv_walls.in(right)) 
         m_pacman.right(2);
       else 
         pacman_keep_moving();
@@ -162,7 +162,7 @@ void Game::move_pacman(int input)
     }
     case Inputs::LEFT:
     {
-      if(!m_boarders.in(left) && !m_inv_walls.in(left)) 
+      if(!m_borders.in(left) && !m_inv_walls.in(left)) 
         m_pacman.left(2);
       else
         pacman_keep_moving();
@@ -189,25 +189,25 @@ void Game::pacman_keep_moving()
   {
     case Momentum::up:
     {
-      if(!m_boarders.in(up) && !m_inv_walls.in(up))   //see if momentum direct is a collision
+      if(!m_borders.in(up) && !m_inv_walls.in(up))   //see if momentum direct is a collision
         m_pacman.up();                                //if not then move
       break;                                          //else dont move
     }
     case Momentum::down:
     {
-      if(!m_boarders.in(down) && !m_inv_walls.in(down))
+      if(!m_borders.in(down) && !m_inv_walls.in(down))
         m_pacman.down();
       break;
     }
     case Momentum::left:
     {
-      if(!m_boarders.in(left) && !m_inv_walls.in(left))
+      if(!m_borders.in(left) && !m_inv_walls.in(left))
         m_pacman.left(2);
       break;
     }
     case Momentum::right:
     {
-      if(!m_boarders.in(right) && !m_inv_walls.in(right))
+      if(!m_borders.in(right) && !m_inv_walls.in(right))
         m_pacman.right(2);
       break;
     }
@@ -288,7 +288,7 @@ Game::Destination Game::calc_ghost_destination(Ghost* ghost, Coord target)
   //can only turn around when in turn_around state
   if(ghost->momentum() != Momentum::left || ghost->state() == GhostState::turn_around)
   {
-    if(!m_boarders.in(right))                             //cant go into boarders
+    if(!m_borders.in(right))                             //cant go into borders
     {
       if(!m_inv_walls.in(right))                          //cant go into an inv wall
       {
@@ -303,7 +303,7 @@ Game::Destination Game::calc_ghost_destination(Ghost* ghost, Coord target)
 
   if(ghost->momentum() != Momentum::up || ghost->state() == GhostState::turn_around)
   {
-    if( !m_boarders.in(down))
+    if( !m_borders.in(down))
     {
       if(!m_inv_walls.in(down) || ghost->state() == GhostState::eaten)  //we can go down through inv wall if eaten
       {
@@ -318,7 +318,7 @@ Game::Destination Game::calc_ghost_destination(Ghost* ghost, Coord target)
 
   if(ghost->momentum() != Momentum::right || ghost->state() == GhostState::turn_around)
   {
-    if(!m_boarders.in(left))
+    if(!m_borders.in(left))
     {
       if(!m_inv_walls.in(left))
       {
@@ -333,7 +333,7 @@ Game::Destination Game::calc_ghost_destination(Ghost* ghost, Coord target)
 
   if(ghost->momentum() != Momentum::down || ghost->state() == GhostState::turn_around)
   {
-    if(!m_boarders.in(up))
+    if(!m_borders.in(up))
     {
       if(!m_inv_walls.in(up) || true)       //ghosts can always go up through inv walls
       {
@@ -350,24 +350,24 @@ Game::Destination Game::calc_ghost_destination(Ghost* ghost, Coord target)
   //now we can check if ghost is boxed in in three directions exept one
   if(destination == Destination::stay_still)
   {
-    if(m_boarders.in(left) && m_boarders.in(right) && m_boarders.in(up))
+    if(m_borders.in(left) && m_borders.in(right) && m_borders.in(up))
     {
-      if(!m_boarders.in(down))                //if only one valid direction ghost can turn around
+      if(!m_borders.in(down))                //if only one valid direction ghost can turn around
         destination = Destination::go_down;
     }
-    else if(m_boarders.in(left) && m_boarders.in(right) && m_boarders.in(down))
+    else if(m_borders.in(left) && m_borders.in(right) && m_borders.in(down))
     {
-      if(!m_boarders.in(up))
+      if(!m_borders.in(up))
         destination = Destination::go_up;
     }
-    else if(m_boarders.in(left) && m_boarders.in(up) && m_boarders.in(down))
+    else if(m_borders.in(left) && m_borders.in(up) && m_borders.in(down))
     {
-      if(!m_boarders.in(right))
+      if(!m_borders.in(right))
         destination = Destination::go_right;
     }
-    else if(m_boarders.in(right) && m_boarders.in(up) && m_boarders.in(down))
+    else if(m_borders.in(right) && m_borders.in(up) && m_borders.in(down))
     {
-      if(!m_boarders.in(left))
+      if(!m_borders.in(left))
         destination = Destination::go_left;
     }
   }
@@ -847,7 +847,7 @@ bool Game::check_ghosts_eaten()
 void Game::reset_piece_positions()
 {
 
-  blink_pieces({&m_boarders,&m_points,&m_power_ups},2);
+  blink_pieces({&m_borders,&m_points,&m_power_ups},2);
 
   m_pacman.jump_home(Momentum::left);     //send pacman home
 
@@ -867,7 +867,7 @@ void Game::reset_piece_positions()
 
 void Game::reset_level()
 {
-  blink_pieces({&m_pacman,&m_blinky,&m_inky,&m_clyde,&m_pinky, &m_boarders}, 2);
+  blink_pieces({&m_pacman,&m_blinky,&m_inky,&m_clyde,&m_pinky, &m_borders}, 2);
 
   m_pacman.jump_home(Momentum::left);     //send pacman and ghosts home
   m_blinky.jump_home(Momentum::still);
@@ -881,7 +881,7 @@ void Game::reset_level()
   m_game_win.print();
   pause(Pause::LONG);
 
-  blink_pieces({&m_pacman,&m_blinky,&m_inky,&m_clyde,&m_pinky,&m_boarders, &m_points, &m_power_ups}, 2);
+  blink_pieces({&m_pacman,&m_blinky,&m_inky,&m_clyde,&m_pinky,&m_borders, &m_points, &m_power_ups}, 2);
 
   m_game_level++;                         //inc level number
 
@@ -963,7 +963,7 @@ void Game::blink_power_ups()
 
 bool Game::play_again()
 {
-  blink_pieces({&m_boarders,&m_points,&m_power_ups},2);
+  blink_pieces({&m_borders,&m_points,&m_power_ups},2);
 
   //print game over prompt
   m_message_win.update_text(GameText::GAME_OVER_MSG);

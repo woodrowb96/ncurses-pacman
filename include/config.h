@@ -1,33 +1,31 @@
-#ifndef Config_H
-#define Config_H
+#ifndef CONFIG_H
+#define CONFIG_H
 
 #include "coord.h"
 #include <string>
 #include <list>
 
 namespace Symbols {
-  const char PACMAN  {'<'};
+  const char PACMAN {'<'};
   const char PINKY {'P'};
-  const char PINKY_FRIGHTENED  {'p'};
-  const char BLINKY  {'B'};
+  const char PINKY_FRIGHTENED {'p'};
+  const char BLINKY {'B'};
   const char BLINKY_FRIGHTENED {'b'};
-  const char CLYDE  {'C'};
+  const char CLYDE {'C'};
   const char CLYDE_FRIGHTENED {'c'};
-  const char INKY  {'I'};
+  const char INKY {'I'};
   const char INKY_FRIGHTENED {'i'};
   const char GHOST_EATEN {'X'};
-  const char BOARDER {'#'};
-  const char POINTS  {'.'};
+  const char BORDER {'#'};
+  const char POINTS {'.'};
   const char POWER_UPS {'!'};
   const char INVISIBLE {' '};
-};
-
-
+}
 
 // shapes and location coords are generated in config.cpp
 namespace Shapes{
   const std::list<Coord> POINT { {0,0} };
-  extern const std::list<Coord> BOARDER;
+  extern const std::list<Coord> BORDER;
   extern const std::list<Coord> INV_WALLS;
   extern const std::list<Coord> POINTS;
   extern const std::list<Coord> POWER_UPS;
@@ -61,7 +59,7 @@ namespace Dimensions{
   const int MSG_SCR_H {9};
   const int MSG_SCR_W {GAME_SCR_W};
   const Coord MSG_SCR_COORD = {5,0};
-};
+}
 
 namespace Inputs{
   const int QUIT {'Q'};
@@ -90,7 +88,7 @@ namespace GameConfig{
   const int SCATTER_LENGTH {20};
   const int POWER_UP_LENGTH {40};
   const int POWER_UP_BLINK_LENGTH {2};
-};
+}
 
 namespace GameText{
   const std::string GAME_OVER_MSG {"\n\tGAME OVER"

@@ -311,10 +311,10 @@ Inky::Inky()
           Locations::INKY_SCATTER) 
 {}
 
-/*********  Boarders  **********/
+/*********  Borders  **********/
 
-Boarders::Boarders()
-  : Piece(Locations::TOP_LEFT, Shapes::BOARDER, Symbols::BOARDER) {}
+Borders::Borders()
+  : Piece(Locations::TOP_LEFT, Shapes::BORDER, Symbols::BORDER) {}
 
 /*******************  INVWALL   ******************/
 

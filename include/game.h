@@ -32,7 +32,7 @@ class Game{
     Clyde m_clyde;
     Inky m_inky;
 
-    Boarders m_boarders;        //boarders
+    Borders m_borders;           //borders
     InvWalls m_inv_walls;
 
     Points m_points;            //scoring pieces

@@ -95,7 +95,7 @@ const Coord Locations::LEFT_WARP = gen_coordinate("assets/level_1_locations.txt"
 const Coord Locations::RIGHT_WARP = gen_coordinate("assets/level_1_locations.txt", 'r');
 
 //Piece shapes
-const list<Coord> Shapes::BOARDER = gen_coordinates("assets/level_1_shapes.txt", '#');
+const list<Coord> Shapes::BORDER = gen_coordinates("assets/level_1_shapes.txt", '#');
 const list<Coord> Shapes::INV_WALLS = gen_coordinates("assets/level_1_shapes.txt", 'x');
 const list<Coord> Shapes::POINTS = gen_coordinates("assets/level_1_shapes.txt", '.');
 const list<Coord> Shapes::POWER_UPS = gen_coordinates("assets/level_1_shapes.txt", '!');

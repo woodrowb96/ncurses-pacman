@@ -208,12 +208,12 @@ class Inky : public Ghost
     Inky();
 };
 
-////////////  Boarders  /////////////////////
+////////////  Borders  /////////////////////
 
-class Boarders : public Piece 
+class Borders : public Piece
 {
   public:
-    Boarders();
+    Borders();
 };
 
 ////////////  InvWalls  /////////////////////
