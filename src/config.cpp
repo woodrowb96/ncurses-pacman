@@ -1,5 +1,8 @@
 #include "config.h"
+#include "coord.h"
 
+#include <list>
+#include <string>
 #include <fstream>
 
 using std::ifstream;

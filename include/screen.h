@@ -9,49 +9,41 @@
 #include <ncurses.h>
 
 /*********Screen *************/
-
-/*
- * the screen class is used to initialize the ncurses screen
- *
- * the screen class also has a destructor which ends the ncurses session
- *
- */
-
-enum class InputMode {non_block, block};    //can switch between blocking and non blocking inpt
+// The screen class is a wrapper around ncurses that we use to:
+//  - initialize the ncurses stdscrn
+//  - get user input (blocking and non_blocking modes)
+/****************************/
+enum class InputMode {non_block, block};
 
 class Screen{
   public:
-    Screen();       //initialize screen
+    Screen();
     ~Screen();
 
-    char get_ch(InputMode input_mode = InputMode::block); //wrapper around ncurses getch()
-                                                          //function that lets us set
-                                                          //blocking mode
+    int get_ch(InputMode input_mode = InputMode::block);
 };
 
-/************** Window **************/
-
-/*
- * Windows are ncurses subwindows which are used to print things onto the screen
- *
- * This base class just creats a window with given dimensions, and location on the 
- * ncurses stdscrn
- *
- */
+/******************** Window ***************************************/
+//The window class is used to:
+//  -create and initialize an ncurses subwindow on the stdscrn
+//  -provide a virtual print() interface for its children
+//
+//This class is the abstract base class for all window sub_types.
+/******************************************************************/
 class Window{
   public:
-    ~Window();    //delete the window
+    ~Window();
 
-    virtual void print() = 0;       //print window to screen
+    virtual void print() = 0;
 
   protected:
-    Window(int height, int length, Coord screen_location);
+    Window(int height, int length, Coord stdscr_location);
 
     int   m_height;
     int   m_length;
-    Coord m_screen_location;      //location on ncurses stdscrn
+    Coord m_stdscr_location;      //window's location on the stdscrn
 
-    WINDOW* m_window  {nullptr};      //pointer to ncurses Window
+    WINDOW* m_window  {nullptr};  //the windows ncurses handle
 };
 
 /************  GameWindow *************/
@@ -70,7 +62,7 @@ enum class WindowLayer {background, midground, foreground};
 class GameWindow : public Window
 {
   public:
-    GameWindow(int height, int length, Coord screen_location);
+    GameWindow(int height, int length, Coord stdscr_location);
 
     void print() override;      //print pieces to the screen
 
@@ -90,7 +82,7 @@ class GameWindow : public Window
 
 class TextWindow : public Window{
   public:
-    TextWindow(int height, int length, Coord screen_location);
+    TextWindow(int height, int length, Coord stdscr_location);
 
     void print() override;          //print text
 

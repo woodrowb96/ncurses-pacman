@@ -1,75 +1,64 @@
 #include "screen.h"
+#include "pieces.h"
+#include "coord.h"
+#include "config.h"
+
+#include <ncurses.h>
+#include <vector>
+#include <string>
 
 using std::vector;
 using std::string;
 
 
-/********* Screen *************/
+/************************** Screen ********************************/
 
 Screen::Screen()
 {
-  initscr();            //start stdscrn
-
-  noecho();             //dont print keypresses to screen
-
+  initscr();              //start ncurses stdscrn
+  noecho();               //dont print keypresses to screen
   keypad(stdscr, TRUE);   //let ncurses read funcion keys
-
-  curs_set(0);        //dont print cursor to screen
-
-  refresh();          //refresh screen to start stdscrn
+  curs_set(0);            //dont print cursor to screen
+  refresh();              //refresh screen to start stdscrn
 }
 
 Screen::~Screen()
 {
-  endwin();         //end stdscrn
+  endwin();    //end stdscrn
 }
 
-char Screen::get_ch(InputMode input_mode)
+int Screen::get_ch(InputMode input_mode)
 {
-  char input {Inputs::NO_INPUT};
+  int input {Inputs::NO_INPUT};
 
-  switch(input_mode)
-  {
-    case InputMode::non_block:
-    {
-      nodelay(stdscr,TRUE);   //getch() doesnt block
-      input = getch();
-      break;
-    }
-    case InputMode::block:
-    {
-      nodelay(stdscr,FALSE);   //getch() blocks
-      input = getch();
-      break;
-    }
-  }
+  nodelay(stdscr, input_mode == InputMode::non_block);  //set the proper blocking mode
+  input = getch();                                      //get our input
+  nodelay(stdscr,FALSE);                                //go back to blocking as default
 
-  nodelay(stdscr,FALSE);  //go back to blocking by default
   return input;
 }
 
-/********* Window **********************/
+/********************* Window ***********************************/
 
-Window::Window(int height, int length, Coord screen_location)
+Window::Window(int height, int length, Coord stdscr_location)
   :
   m_height          {height},
   m_length          {length},
-  m_screen_location {screen_location}
+  m_stdscr_location {stdscr_location}
 {
-  //initialize window
-  m_window = newwin(m_height, m_length, m_screen_location.x, m_screen_location.y);
+  //create the window and place it on the stdscrn
+  m_window = newwin(m_height, m_length, m_stdscr_location.x, m_stdscr_location.y);
 }
 
 Window::~Window()
 {
-  if(m_window)
-    delwin(m_window);  //delete the window
+  if(m_window) delwin(m_window);
 }
 
 /********* GameWindow **********************/
 
-GameWindow::GameWindow(int height, int length, Coord screen_location)
-  : Window(height, length, screen_location) {}
+GameWindow::GameWindow(int height, int length, Coord stdscr_location)
+  : Window(height, length, stdscr_location) {}
 
 void GameWindow::print()
 {
@@ -104,8 +93,8 @@ void GameWindow::add(Piece* piece, WindowLayer layer)
 
 /********* TextWindow **********************/
 
-TextWindow::TextWindow(int height, int length, Coord screen_location)
-  : Window(height, length, screen_location) {}
+TextWindow::TextWindow(int height, int length, Coord stdscr_location)
+  : Window(height, length, stdscr_location) {}
 
 void TextWindow::print()
 {

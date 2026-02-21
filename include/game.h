@@ -58,7 +58,7 @@ class Game{
     void game_loop();
 
     //pacman move methods
-    void move_pacman(char input);
+    void move_pacman(int input);
     void pacman_keep_moving();
 
     //ghost move methods

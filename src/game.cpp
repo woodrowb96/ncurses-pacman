@@ -1,5 +1,11 @@
 #include "game.h"
+#include "config.h"
+#include "coord.h"
+#include "pieces.h"
+#include "screen.h"
 
+#include <string>
+#include <vector>
 #include <limits>
 #include <thread>
 #include <chrono>
@@ -34,7 +40,7 @@ void Game::run()
   m_message_win.print();
 
   //loop and get valid input
-  char input {'\0'};
+  int input {'\0'};
   while( (input = m_scrn.get_ch(InputMode::block)) != Inputs::PLAY && input != Inputs::QUIT)
     continue;
 
@@ -48,7 +54,7 @@ void Game::run()
 
 void Game::game_loop()
 {
-  char input {'\0'};
+  int input {'\0'};
 
   m_game_win.print();
   print_stats();
@@ -120,7 +126,7 @@ void Game::game_loop()
   }
 }
 
-void Game::move_pacman(char input)
+void Game::move_pacman(int input)
 {
   Coord current = m_pacman.location();
   Coord up = current + Coord{0,-1};
@@ -964,7 +970,7 @@ bool Game::play_again()
   m_message_win.print();
 
   //loop until valid input
-  char input {'\0'};
+  int input {'\0'};
   while( (input = m_scrn.get_ch(InputMode::block)) != Inputs::PLAY && input != Inputs::QUIT)
     continue;
 

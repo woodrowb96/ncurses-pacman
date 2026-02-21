@@ -64,13 +64,13 @@ namespace Dimensions{
 };
 
 namespace Inputs{
-  const char QUIT {'Q'};
-  const char PLAY {'p'};
-  const char UP {'w'};
-  const char DOWN {'s'};
-  const char LEFT {'a'};
-  const char RIGHT {'d'};
-  const char NO_INPUT {'\0'};
+  const int QUIT {'Q'};
+  const int PLAY {'p'};
+  const int UP {'w'};
+  const int DOWN {'s'};
+  const int LEFT {'a'};
+  const int RIGHT {'d'};
+  const int NO_INPUT {'\0'};
 }
 
 namespace Pause{
