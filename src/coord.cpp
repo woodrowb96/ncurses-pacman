@@ -20,7 +20,7 @@ Coord operator-(const Coord& l, const Coord& r)
   return Coord{l.x - r.x, l.y - r.y};
 }
 
-int distance(const Coord l, const Coord r)
+int squared_dist(const Coord& l, const Coord& r)
 {
   int x_diff = (l.x - r.x);
   int y_diff = l.y - r.y;

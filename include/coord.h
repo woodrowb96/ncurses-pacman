@@ -1,20 +1,20 @@
 #ifndef COORD_H
 #define COORD_H
 
-struct Coord{
+struct Coord
+{
   int x;
   int y;
 };
 
-//operator overloads used for coord struct
+//logical overloads
 bool operator==(const Coord& l, const Coord& r);
 bool operator!=(const Coord& l, const Coord& r);
 
-//addition and subtraction
+//arithmetic overloads
 Coord operator+(const Coord& l, const Coord& r);
 Coord operator-(const Coord& l, const Coord& r);
 
-//get distance between two coords
-int distance(const Coord l, const Coord r);
+int squared_dist(const Coord& l, const Coord& r);
 
 #endif
