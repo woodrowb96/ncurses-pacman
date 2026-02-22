@@ -7,93 +7,94 @@
 #include <list>
 #include <ncurses.h>
 
-////////////  Piece //////////
-/*
- * A piece is the most generic thing that can be printed onto the screen
- *
- * m_shape describes the pieces shape in the game window
- *
- * m_location described the pieces position in the game window, and can be added to each
- * coord in m_shape to print the piece onto the screen
- *
- * m_symbol is what char is used to represent the piece on screen
- *
- * m_symbol is accesed through a m_blinker, which is used to blink the piece on the screen
- * by switching between m_sybmol and an INVISIBLE symbol
- *
- */
+/********************************** PIECE ***********************************/
+// A piece is the most generic type of object that can be drawn on screen
+//
+// This class provides some common functionality used by all pieces:
+//  -draw(window): draw the pieces shape onto the window
+//  -blink(): blink the pieces symbol (i.e switch from 'x' to ' ' and vice versa)
+//  -in(coord): check if this pieces coords overlap with a single coordinate
+//  -in(piece): check if this pieces coords overlap with another pieces coords
+/********************************************************************************/
 class Piece
 {
   public:
     Piece(Coord location, std::list<Coord> shape, char symbol);
 
+    //getters
     const std::list<Coord>& shape() const;
-
     Coord location() const;
-    char symbol() const;      //will return the blinked symbol, not necessarily m_symbol
+    char symbol() const;     //returns char in m_blinker[0], not neccesarily m_symbol
 
-    void blink();            //blink the symbol returned by symbol()
-
-    bool in(const Piece* p); //true if any of p's coords overlap with this piece
-    bool in(Coord c);        //true if coord overlaps with this piece
-
-    void draw(WINDOW* w);
+    void draw(WINDOW* w);    //draw m_shape at m_location on the window
+    void blink();
+    bool in(const Piece* other);
+    bool in(Coord coord);
 
   protected:
-    Coord m_location;             //pieces location on screen
-    std::list<Coord> m_shape;          //coords describing pieces shape
-
+    Coord m_location;           //coord relative to the windows coords
+    std::list<Coord> m_shape;   //coords relative to m_location
     char m_symbol;
+    const char* m_blinker[2] {&m_symbol, &Symbols::INVISIBLE};
 
-    //used to blink between invisible symbol and m_symbol
-    const char* m_blinker[2]  {&m_symbol, &Symbols::INVISIBLE};
-
-    void set_symbol(char symbol);     //set m_symbol
-
+    void set_symbol(char symbol);
 };
 
-////////////  DynamicPiece  /////////////////////
-/*
- * DynamicPieces are Pieces that can be moved around the screen
- *
- * each DynamicPiece has a m_momentum variable wich discribes the pieces current
- * direction its moving in
- *
- * each DynamicPiece also has a m_home_coord which it can jump back to
- *
- */
+/******************************** DYNAMIC PIECE ********************************/
+// A dynamic piece is the most generic type of piece with movement
+//
+// Each dynamic piece has:
+//  - a momentum to indicate its current direction of movement
+//  - a home coord it can jump back to
+//
+// This class provides some common functionality used by all dynamic pieces
+//  -movement functions: move piece in a certain dir
+//  -jump: jump to an arbitrary coord
+/********************************************************************************/
 
-enum Momentum {up, down, left, right, still};   //used to indicate pieces current direction
+enum Momentum {up, down, left, right, still};
 
 class DynamicPiece : public Piece
 {
   public:
     DynamicPiece(Coord location, std::list<Coord> shape, char symbol, Momentum start_m);
 
+    //getter
     Momentum momentum() const;
 
-    void up(int n_spaces = 1);   //move in direction and set momentum in that dir
+    //movement functions
+    void up(int n_spaces = 1);
     void down(int n_spaces = 1);
     void left(int n_spaces = 1);
     void right(int n_spaces = 1);
 
-    void jump(Coord coord);                   //jump to coord and keep current momentum
-    void jump(Coord coord, Momentum new_m);   //jump and get new momentum
+    //jump and preserve momentum
+    void jump(Coord coord);
+    void jump_home();
 
-    void jump_home();                         //go to home coord with current momentum
-    void jump_home(Momentum new_m);           //go home and set new momentum
+    //jump and get new momentum
+    void jump(Coord coord, Momentum new_m);
+    void jump_home(Momentum new_m);
 
-    bool is_home();                       //see if we are at home coordinate
+    //are we at the home coord
+    bool is_home();
+
   protected:
-    Momentum m_momentum;    //current momentum
-    Coord m_home;           //home coordinate
+    Momentum m_momentum;
+    Coord m_home;
 };
 
-////////////  PacMan  /////////////////////
+/*********************************** PACMAN ************************************/
+//Our pacman game piece
+//
+//Pacman keeps track of:
+//  -its current amount of lives
+//  -how many points its eaten
+//  -if it is currently being eaten
+/********************************************************************************/
+class Ghost;  //forward declaration
 
-class Ghost;    //forward decleration of Ghost
-
-enum class EatenFlag {not_eaten, eaten};  //used to indicate if piece was eaten
+enum class EatenFlag {not_eaten, eaten};
 
 class PacMan : public DynamicPiece
 {
@@ -101,17 +102,17 @@ class PacMan : public DynamicPiece
     PacMan();
 
     int points() const;
-    void inc_points(int inc);       //increment points
+    void inc_points(int inc);
 
     int lives() const;
-    void dec_lives();               //decrement by 1 live
+    void dec_lives();
 
-    bool check_eaten(Ghost* ghost); //check if pacman is eaten, also sets eaten flag
-    bool eaten();                   //return true if eaten flag is set
+    bool check_eaten(Ghost* ghost); //set the eaten flag, also returns true if we are being eaten
+    bool eaten();                   //return true if we are being eaten
+    void reset_eaten_flag();        //reset eaten flag to not eaten
 
-    void reset();     //reset momentum, lives, points and location
+    void reset();                   //reset momentum, lives, points and location
 
-    void reset_eaten_flag();   //reset eaten flag to not eaten
   private:
     int m_lives;
     int m_points;
@@ -119,104 +120,91 @@ class PacMan : public DynamicPiece
     EatenFlag m_eaten_flag {EatenFlag::not_eaten};
 };
 
-////////////  Ghost  /////////////////////
 
-enum class PursuitState;    //forward decleration from game.h
+/********************************** GHOST ***********************************/
+//Our parent for all the ghost types.
+//
+//Ghosts have 5 states that determine their behavior
+//  -chase: chase the target
+//  -scatter: go to their scatter target
+//  -turn_around: turn around and go in the opposite direction
+//  -frightened: go in a random direction
+//  -eaten: go back to their home coordinate
+/********************************************************************************/
+enum class PursuitState;    //forward declaration from game.h
 
 enum class GhostState {chase, scatter, turn_around, frightened, eaten};
-
-/*
- * Ghosts have the following states, which determin behavior
- *
- * chase: go to chase target
- * Scatter: go to scatter target
- * turn_around: turn around
- * frightened: go in random direction
- * eaten: go to home coord
- *
- * the game class determines the current state, and calculates current targets
- * see the game class's update_ghost_state for next state logic
- *
- */
 
 class Ghost : public DynamicPiece
 {
   public:
+    //getters
     GhostState state() const;
-    void set_state(GhostState new_state);
-
-    //use games pursuit state to set current ghost state
-    void set_state(PursuitState pursuit_state);
-
     int value();
 
+    //setters
+    void set_state(GhostState new_state);         //set state directly
+    void set_state(PursuitState pursuit_state);   //use the games current PursuitState to calc and set the state
+
     bool eats(PacMan* p);         //check if ghost eats pacman
-    bool check_eaten(PacMan* p);  //check if ghost is eaten by pacman and set eaten flag
 
-    bool eaten();          //return true if eaten flag is set
-
-    void reset();         //reset location and momentum
-
+    bool check_eaten(PacMan* p);  //check if ghost is eaten by pacman and set the eaten state
+    bool eaten();                 //return true if ghost is being eaten
     void reset_eaten_flag();
 
+    void reset();                 //resets location and momentum
+
   protected:
-    Ghost(Coord coord, char chase_symbol, char frigh_symbol, Coord scatter_coord);
+    //protected constructor, we dont want to ever make a plain ghost
+    Ghost(Coord coord, char chase_symbol, char fright_symbol, Coord scatter_coord);
 
   private:
-    char m_chase_symbol;      //symbol in chase and scatter states
-    char m_fright_symbol;     //symbol during turn_around and frightened states
-    char m_eaten_symbol {Symbols::GHOST_EATEN}; //symbol during eaten state
-
-    int m_value {GameConfig::GHOST_VALUE};   //points pacman gets when eating a ghost
-
     GhostState m_ghost_state  {GhostState::scatter};
-
     EatenFlag m_eaten_flag {EatenFlag::not_eaten};
 
-    void update_symbol();         //update symbol based on current state
+    char m_chase_symbol;
+    char m_fright_symbol;
+    char m_eaten_symbol {Symbols::GHOST_EATEN};
+
+    int m_value {GameConfig::GHOST_VALUE};  //points pacman gets when it eats the ghost
+
+    void update_symbol();                   //update symbol based on current state
 };
 
-////////////  Pinky  /////////////////////
+/************************ PINKY, BLINKY, INKY AND CLYDE ************************/
 
-class Pinky : public Ghost 
+class Pinky : public Ghost
 {
   public:
     Pinky();
 };
 
-////////////  Blinky  /////////////////////
-
-class Blinky : public Ghost 
+class Blinky : public Ghost
 {
   public:
     Blinky();
 };
 
-////////////  CLYDE  /////////////////////
-
-class Clyde : public Ghost 
+class Clyde : public Ghost
 {
   public:
     Clyde();
 };
 
-////////////  INKY  /////////////////////
-
-class Inky : public Ghost 
+class Inky : public Ghost
 {
   public:
     Inky();
 };
 
-////////////  Borders  /////////////////////
-
+/***************************** BORDERS and INVWALLS *****************************/
+//  All the border and invisible wall pieces for our game.
+/********************************************************************************/
 class Borders : public Piece
 {
   public:
     Borders();
 };
-
-////////////  InvWalls  /////////////////////
 
 class InvWalls : public Piece 
 {
@@ -224,38 +212,36 @@ class InvWalls : public Piece
     InvWalls();
 };
 
-//////////// Warp //////////////////////
+/************************** WARP, LEFTWARP, RIGHTWARP ***************************/
+//  A plain warp with generic coord, then our left and right warps
+//  with their coords baked in
+/********************************************************************************/
+
 class Warp : public Piece
 {
   public:
     Warp(Coord location);
 };
 
-//////////// Left Warp //////////////////////
 class LeftWarp : public Warp
 {
   public:
     LeftWarp();
 };
 
-//////////// Right Warp //////////////////////
 class RightWarp : public Warp
 {
   public:
     RightWarp();
 };
 
-////////////  Scoring Piece  /////////////////////
+/********************************** SCORINGPIECE ***********************************/
+// A class for non-ghost scoring pieces.
+//
+// When a score happens the coord that was eaten gets removed from the shape
+/*******************************************************************************/
 
-/*
- * Whenever a point is scored, scoring piece will remove the scoring coordinate from
- * m_shape coordinates.
- *
- * m_shape can be reset using m_original_shape
- *
- */
-
-enum class ScoreFlag {no_score, score};   //used to indicate if there was a score
+enum class ScoreFlag {no_score, score};
 
 class ScoringPiece : public Piece
 {
@@ -264,34 +250,39 @@ class ScoringPiece : public Piece
 
     int value();
 
-    //checks if there is a score, removes  scoring coord and sets score flag
-    bool check_score(Piece* p);
-
-    bool score();    //return true if score flag is set
-
-    void reset();   //reset shape to original shape
-
+    bool check_score(Piece* p);   //if its a score: set the flag, remove the scoring coord, return true
+    bool score();                 //return true if score flag is set
     void reset_score_flag();
+
+    void reset();                 //reset shape to original shape
+
   private:
-    std::list<Coord> m_original_shape;     //original shape of points
+    ScoreFlag m_score_flag {ScoreFlag::no_score};
+    std::list<Coord> m_original_shape;
     int m_value;
 
-    ScoreFlag m_score_flag {ScoreFlag::no_score};
 };
 
-////////////  Points  /////////////////////
+/******************************  POINTS *********************************/
+// the point pellets pacman eats
+/************************************************************************/
 
 class Points : public ScoringPiece
 {
   public:
     Points();
 
-    bool all_eaten();     //return true if all points were eaten
+    bool all_eaten();   //return true if all points were eaten
 };
 
-////////////  Powerups  /////////////////////
+/*********************************** POWERUPS ***********************************/
+// Power ups are a special type of scoring piece, because they give pacman point 
+// and a power-up when eaten.
+//
+// The power-up behavior needs special logic to be disabled when the power up is active.
+/********************************************************************************/
 
-enum class PowerUpState {off, active};   //power up state is either off or activated
+enum class PowerUpState {off, active};
 
 class PowerUps : public ScoringPiece
 {
@@ -299,11 +290,11 @@ class PowerUps : public ScoringPiece
     PowerUps();
 
     PowerUpState state();
+
     void set_state(PowerUpState new_state);
 
   private:
     PowerUpState m_power_up_state {PowerUpState::off};
 };
-
 
 #endif
