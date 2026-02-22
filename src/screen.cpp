@@ -15,6 +15,7 @@ using std::string;
 Screen::Screen()
 {
   initscr();              //start ncurses stdscrn
+  cbreak();               //dont buffer input (so we dont need to press ENTER to get inpt)
   noecho();               //dont print keypresses to screen
   keypad(stdscr, TRUE);   //let ncurses read function keys
   curs_set(0);            //dont print cursor to screen
