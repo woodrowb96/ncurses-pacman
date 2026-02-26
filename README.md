@@ -1,4 +1,4 @@
-# Pacman
+# nCurses Pacman
 
 A terminal-based PacMan game written in C++ using the ncurses TUI library.
 
